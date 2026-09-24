@@ -1,0 +1,887 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>麦理浩径精华徒步｜破边洲与浪茄湾</title>
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="preconnect" href="https://commons.wikimedia.org">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    :root {
+      --ink: #173035;
+      --muted: #5c6b6d;
+      --paper: #faf8f2;
+      --panel: #ffffff;
+      --sea: #0f6f75;
+      --reef: #2d9c8f;
+      --trail: #d96c38;
+      --sun: #f1b849;
+      --fern: #33694e;
+      --line: #d8dedb;
+      --shadow: 0 18px 48px rgba(24, 47, 52, .14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+    }
+
+    a {
+      color: var(--sea);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .hero {
+      min-height: 86vh;
+      display: grid;
+      align-items: end;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(12, 30, 32, .18) 0%, rgba(12, 30, 32, .62) 74%, rgba(12, 30, 32, .78) 100%),
+        url("https://commons.wikimedia.org/wiki/Special:FilePath/Long%20Ke%20Wan%203.jpg?width=2400") center / cover no-repeat;
+    }
+
+    .hero-inner {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 108px 0 72px;
+      color: #fff;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 12px;
+      border: 1px solid rgba(255, 255, 255, .34);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .12);
+      backdrop-filter: blur(10px);
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 880px;
+      margin-top: 18px;
+      font-size: clamp(44px, 8vw, 94px);
+      font-weight: 800;
+    }
+
+    .hero-copy {
+      max-width: 760px;
+      margin: 20px 0 0;
+      font-size: clamp(17px, 2vw, 22px);
+      color: rgba(255, 255, 255, .9);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 34px;
+      max-width: 980px;
+    }
+
+    .stat {
+      min-height: 104px;
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, .22);
+      background: rgba(255, 255, 255, .13);
+      backdrop-filter: blur(12px);
+      border-radius: 8px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 26px;
+      line-height: 1.1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 7px;
+      color: rgba(255, 255, 255, .82);
+      font-size: 14px;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(250, 248, 242, .9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    nav .bar {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 64px;
+    }
+
+    .brand {
+      font-weight: 800;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .navlinks {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .navlinks a {
+      color: var(--muted);
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .navlinks a:hover {
+      color: var(--ink);
+      background: #eef2ef;
+      text-decoration: none;
+    }
+
+    main {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    section {
+      padding: 76px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    h2 {
+      font-size: clamp(30px, 4vw, 48px);
+    }
+
+    .section-head p {
+      max-width: 520px;
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .plan-grid {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-pad {
+      padding: 24px;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #e7f2ef;
+      color: var(--fern);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .warning {
+      background: #fff6df;
+      border-color: #edd087;
+    }
+
+    .warning .badge {
+      background: #f8e7b4;
+      color: #724e00;
+    }
+
+    .route-steps {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+
+    .route-steps li {
+      display: grid;
+      grid-template-columns: 94px 1fr;
+      gap: 14px;
+      align-items: start;
+      padding: 14px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .route-steps li:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .time {
+      font-weight: 800;
+      color: var(--trail);
+      white-space: nowrap;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .map-wrap {
+      height: 620px;
+      min-height: 420px;
+    }
+
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+
+    .map-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .map-legend {
+      padding: 10px 12px;
+      border: 1px solid rgba(23, 48, 53, .12);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .94);
+      box-shadow: 0 8px 24px rgba(24, 47, 52, .14);
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .map-legend strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+      white-space: nowrap;
+    }
+
+    .legend-line {
+      width: 28px;
+      height: 0;
+      border-top: 4px solid var(--trail);
+      border-radius: 999px;
+    }
+
+    .legend-line.po {
+      border-color: #e14942;
+    }
+
+    .legend-line.road {
+      border-color: var(--sea);
+      border-top-style: dashed;
+    }
+
+    .leaflet-popup-content {
+      margin: 10px 12px;
+      min-width: 170px;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .slot {
+      min-height: 172px;
+      padding: 18px;
+      border-left: 1px solid var(--line);
+    }
+
+    .slot:first-child {
+      border-left: 0;
+    }
+
+    .slot strong {
+      display: block;
+      color: var(--sea);
+      font-size: 19px;
+      margin-bottom: 8px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .checklist {
+      display: grid;
+      gap: 14px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .checklist li {
+      padding: 16px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 8px;
+    }
+
+    .checklist strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .photo-card {
+      position: relative;
+      min-height: 300px;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #dfe8e4;
+      box-shadow: var(--shadow);
+    }
+
+    .photo-card.featured {
+      grid-column: span 2;
+      min-height: 430px;
+    }
+
+    .photo-card.tall {
+      min-height: 360px;
+    }
+
+    .photo-card img {
+      width: 100%;
+      height: 100%;
+      min-height: inherit;
+      object-fit: cover;
+      display: block;
+      transition: transform .35s ease;
+    }
+
+    .photo-card:hover img {
+      transform: scale(1.035);
+    }
+
+    .photo-caption {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 18px;
+      color: #fff;
+      background: linear-gradient(180deg, transparent, rgba(11, 27, 30, .76));
+    }
+
+    .photo-caption strong {
+      display: block;
+      font-size: 20px;
+    }
+
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .tip {
+      padding: 20px;
+      min-height: 210px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 8px;
+    }
+
+    .tip h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .source-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    footer {
+      padding: 34px 0 54px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .timeline,
+      .tips-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .plan-grid,
+      .gallery,
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .map-wrap {
+        height: 520px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero-inner,
+      main,
+      nav .bar {
+        width: min(100% - 28px, 1180px);
+      }
+
+      .hero {
+        min-height: 92vh;
+      }
+
+      .hero-grid,
+      .timeline,
+      .tips-grid {
+        grid-template-columns: 1fr;
+      }
+
+      nav .bar {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 12px 0;
+      }
+
+      .navlinks {
+        justify-content: flex-start;
+      }
+
+      section {
+        padding: 56px 0;
+      }
+
+      .section-head {
+        display: block;
+      }
+
+      .section-head p {
+        margin-top: 12px;
+      }
+
+      .route-steps li {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+
+      .slot {
+        min-height: auto;
+        border-left: 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .slot:first-child {
+        border-top: 0;
+      }
+
+      .photo-card {
+        min-height: 260px;
+      }
+
+      .photo-card.featured {
+        grid-column: auto;
+        min-height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">2026 年 10 月 24 日周六 · 09:00 华南城出发</div>
+      <h1>麦理浩径精华徒步：破边洲与浪茄湾</h1>
+      <p class="hero-copy">一日看尽万宜水库东坝、六角岩柱、破边洲海蚀柱与浪茄湾白沙海岸。适合从深圳当天往返，但务必早出发、查天气、预留过关与打车时间。</p>
+      <div class="hero-grid" aria-label="路线概览">
+        <div class="stat"><strong>3-4 小时</strong><span>华南城到东坝，经福田/落马洲/大学站</span></div>
+        <div class="stat"><strong>2.5-4 小时</strong><span>推荐轻徒步：东坝往返破边洲与浪茄湾</span></div>
+        <div class="stat"><strong>5-7 公里</strong><span>轻徒步距离，按拍照停留浮动</span></div>
+        <div class="stat"><strong>无需预约</strong><span>10 月 24 日不在当前破边洲预约日期内</span></div>
+      </div>
+    </div>
+  </header>
+
+  <nav aria-label="页面导航">
+    <div class="bar">
+      <a class="brand" href="#">MacLehose · Po Pin · Long Ke</a>
+      <div class="navlinks">
+        <a href="#tips">注意事项</a>
+        <a href="#route">交通路线</a>
+        <a href="#map-section">路线图</a>
+        <a href="#schedule">耗时</a>
+        <a href="#views">风景图</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section id="tips">
+      <div class="section-head">
+        <h2>出发前注意事项</h2>
+        <p>这条线最容易翻车的不是路难，而是证件、预约、现金、流量、天气和回程交通。</p>
+      </div>
+
+      <div class="tips-grid">
+        <article class="tip">
+          <h3>港澳通行证与签注</h3>
+          <p>内地居民赴港需持有效《往来港澳通行证》和有效赴港签注。出发前逐人核对证件有效期、签注次数、签注目的地是否为香港。</p>
+        </article>
+        <article class="tip">
+          <h3>兑换港币</h3>
+          <p>香港的士已要求提供电子支付，车费和多数补给可优先用支付宝、微信或八达通。现金不用换太多，建议每人备 HKD 50-100 小额现金，或全队备 HKD 300-500 作为断网、设备故障等应急。</p>
+        </article>
+        <article class="tip">
+          <h3>流量包与导航</h3>
+          <p>提前开通香港漫游或购买香港流量包，下载离线地图；东坝、浪茄湾、山脊部分位置网络会波动，队伍不要完全依赖一个人的手机。</p>
+        </article>
+        <article class="tip">
+          <h3>预约与证件一致</h3>
+          <p>指定日期进入破边洲段需要实名预约。预约姓名、证件类型与现场出示证件保持一致，凭证截图和原链接都保存。</p>
+        </article>
+        <article class="tip">
+          <h3>水与防晒</h3>
+          <p>东坝到浪茄湾沿线补给少、遮阴少。每人至少 1.5-2 升水，带电解质、防晒霜、帽子、墨镜和轻量雨具。</p>
+        </article>
+        <article class="tip">
+          <h3>安全边界</h3>
+          <p>破边洲一带有悬崖和碎石坡，沿官方步道和观景台走，不翻越栏杆、不走野路；遇雷雨、酷热警告或强风浪，直接取消或改轻量市区行程。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="route">
+      <div class="section-head">
+        <h2>从华南城到东坝</h2>
+        <p>按你们的方案：华南城地铁站到福田口岸，过关到落马洲，再坐东铁线到大学站，最后从大学站直接打车到万宜水库东坝。周六中午去西贡方向容易堵车，东坝回程也要提前约车。</p>
+      </div>
+
+      <div class="plan-grid">
+        <article class="panel panel-pad">
+          <span class="badge">推荐交通线</span>
+          <ol class="route-steps">
+            <li><span class="time">55-65 分</span><div><strong>09:00 华南城站 → 福田口岸</strong><div class="small">深圳地铁 10 号线往福田口岸方向，预计约 09:55-10:05 到口岸。</div></div></li>
+            <li><span class="time">25-55 分</span><div><strong>福田口岸过关 → 落马洲站</strong><div class="small">10 月 24 日是普通周六，不是当前破边洲预约高峰日期；但口岸排队仍按 25-55 分钟预留。</div></div></li>
+            <li><span class="time">24-30 分</span><div><strong>落马洲 → 大学站</strong><div class="small">乘香港东铁线南下，到大学站下车。过关顺利时约 10:30-11:00 上车，约 11:00-11:40 到大学站。</div></div></li>
+            <li><span class="time">60-85 分</span><div><strong>大学站 → 万宜水库东坝</strong><div class="small">从大学站直接打新界的士前往东坝；周六中午经过西贡方向，按拥堵预留时间。预计 12:00-13:00 到东坝。</div></div></li>
+          </ol>
+        </article>
+
+        <aside class="panel panel-pad warning">
+          <span class="badge">10 月 24 日适用</span>
+          <h3>破边洲段当天按当前公告无需预约</h3>
+          <p>香港渔护署公告中的预约日期为 2026 年 9 月 25-27 日及 10 月 1-7 日，9:00-17:00 进入“万宜地质步道—破边洲段”须预约。你们计划的 10 月 24 日周六不在该范围内。</p>
+          <p class="small">仍建议出发前一晚再看一次官方页面和天气。你们 09:00 从华南城出发，预计中午到东坝，本次只走东坝往返破边洲与浪茄湾的轻徒步精华线。</p>
+          <a href="https://www.hiking.gov.hk/ppcbooking" target="_blank" rel="noreferrer">查看渔护署预约页面</a>
+        </aside>
+      </div>
+    </section>
+
+    <section id="map-section">
+      <div class="section-head">
+        <h2>路线图</h2>
+        <p>蓝线是华南城 → 福田/落马洲 → 大学站 → 东坝的接驳示意，红线是破边洲段，橙线是东坝至浪茄湾方向。两段徒步都从东坝出发，同路折返，现场以官方路牌和实时导航为准。</p>
+      </div>
+      <div class="panel map-wrap">
+        <div id="map" role="img" aria-label="深圳华南城到香港麦理浩径破边洲和浪茄湾路线图"></div>
+      </div>
+      <p class="map-note">底图已改用 Carto Voyager；徒步线路采用香港渔护署官方 GPX 简化绘制。默认视野聚焦东坝、破边洲、浪茄湾，缩小地图可查看深圳至大学站的接驳示意。</p>
+    </section>
+
+    <section id="schedule">
+      <div class="section-head">
+        <h2>徒步耗时</h2>
+        <p>本次定位为轻徒步，不做长线。核心路线是东坝往返破边洲观景台，再从东坝往返浪茄湾，按体力和天色控制折返点。</p>
+      </div>
+
+      <div class="timeline" aria-label="推荐一日行程">
+        <div class="slot"><strong>09:00</strong>华南城站集合，乘 10 号线前往福田口岸。</div>
+        <div class="slot"><strong>10:00 左右</strong>抵达福田口岸，过关后到落马洲站。</div>
+        <div class="slot"><strong>11:00-11:40</strong>落马洲乘东铁线到大学站，出站直接打车。</div>
+        <div class="slot"><strong>12:00-13:00</strong>大学站打车到万宜水库东坝，先看东坝与六角岩柱。</div>
+        <div class="slot"><strong>13:00-17:00</strong>东坝 → 破边洲观景台 → 东坝 → 浪茄湾 → 东坝，轻徒步往返。</div>
+        <div class="slot"><strong>17:00 前后</strong>叫车离开东坝，天黑前结束山路段。</div>
+      </div>
+
+      <div class="two-col" style="margin-top:18px">
+        <article class="panel panel-pad">
+          <span class="badge">本次路线</span>
+          <h3>东坝往返破边洲与浪茄湾</h3>
+          <p>东坝 → 破边洲观景台 → 东坝 → 浪茄湾 → 东坝，全程约 5-7 公里，徒步约 2.5-4 小时。你们从 09:00 出发，预计 12:00-13:00 到东坝，因此建议把 17:00 作为离开东坝的硬时间点。</p>
+          <p class="small">如果 13:00 前到东坝，可以比较从容地看东坝、破边洲和浪茄湾；若过关或打车延误，则优先保破边洲观景台。</p>
+        </article>
+        <article class="panel panel-pad">
+          <span class="badge">轻徒步节奏</span>
+          <h3>先破边洲，再浪茄湾</h3>
+          <p>建议到东坝后先看水库东坝和六角岩柱，再走破边洲观景台往返，回到东坝后再去浪茄湾。这样撤退点清晰，体力不足或时间延误时，可以在东坝直接结束。</p>
+          <p class="small">破边洲段约 1.5-2 小时；东坝至浪茄湾往返约 1.5-2 小时。浪茄湾下到沙滩后要预留爬回东坝和叫车离开的时间。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="views">
+      <div class="section-head">
+        <h2>风景图</h2>
+        <p>核心看点是三件事：东坝的六角形岩柱、破边洲的海蚀柱与浪茄湾的白沙海岸。</p>
+      </div>
+
+      <div class="gallery">
+        <article class="photo-card featured">
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Po%20Pin%20Chau%20Viewing%20Platform%2002-05-2025(3).jpg?width=1800" alt="破边洲观景台望向海蚀岩柱">
+          <div class="photo-caption"><strong>破边洲观景台</strong><span>新开放步道可近距离观看海蚀柱与六角岩体。</span></div>
+        </article>
+        <article class="photo-card">
+          <img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/East%20Dam%20of%20High%20Island%20Reservoir%2002-05-2025(4).jpg?width=1200" alt="万宜水库东坝近景">
+          <div class="photo-caption"><strong>东坝近景</strong><span>从东坝起步前，可以先看海堤、岩壁和开阔海面。</span></div>
+        </article>
+        <article class="photo-card">
+          <img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/High%20Island%20Reservoir%20East%20Dam%2002.jpg?width=1200" alt="万宜水库东坝道路和海岸">
+          <div class="photo-caption"><strong>东坝入口区</strong><span>交通抵达后先在这里整理装备，再进入破边洲和浪茄湾路线。</span></div>
+        </article>
+        <article class="photo-card tall">
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Long%20Ke%20Wan%202.jpg?width=1400" alt="浪茄湾全景">
+          <div class="photo-caption"><strong>浪茄湾全景</strong><span>白沙、清水与山脊构成这条轻徒步的海湾奖励。</span></div>
+        </article>
+        <article class="photo-card">
+          <img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/PoPinChau.JPG?width=1200" alt="破边洲海蚀岩柱">
+          <div class="photo-caption"><strong>破边洲岩柱</strong><span>海蚀切出的孤立岩柱，是东坝一带最有辨识度的景观。</span></div>
+        </article>
+        <article class="photo-card">
+          <img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Po%20Pin%20Chau%201.jpg?width=1200" alt="破边洲与海岸线">
+          <div class="photo-caption"><strong>破边洲海岸</strong><span>近看岩壁纹理，远看海面与悬崖线。</span></div>
+        </article>
+        <article class="photo-card">
+          <img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Conic%20Island%2C%20Hong%20Kong%2001.jpg?width=1200" alt="破边洲附近海岸视角">
+          <div class="photo-caption"><strong>海上视角</strong><span>破边洲一带的地形从侧面看更能看出断崖感。</span></div>
+        </article>
+        <article class="photo-card featured">
+          <img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Long%20Ke%20Wan%203.jpg?width=1800" alt="浪茄湾沙滩与山脊">
+          <div class="photo-caption"><strong>浪茄湾沙滩</strong><span>如果当天时间顺利，这里是最适合停留拍照和休息的点。</span></div>
+        </article>
+        <article class="photo-card tall">
+          <img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Long%20Ke%20Wan%201.jpg?width=1200" alt="浪茄湾海湾景色">
+          <div class="photo-caption"><strong>浪茄湾海湾</strong><span>从步道上回望，能看到海湾弧线和营地区域。</span></div>
+        </article>
+        <article class="photo-card">
+          <img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/LongKe.JPG?width=1200" alt="浪茄湾近岸风景">
+          <div class="photo-caption"><strong>近岸风景</strong><span>浪茄湾的沙色和水色，是这段路线最放松的一面。</span></div>
+        </article>
+        <article class="photo-card">
+          <img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/East%20Dam%2C%20High%20Island%20Reservoir%201.jpg?width=1200" alt="万宜水库东坝景观">
+          <div class="photo-caption"><strong>万宜水库东坝</strong><span>抵达后先看水库、海堤与地质步道入口。</span></div>
+        </article>
+        <article class="photo-card">
+          <img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Hexagonal%20volcanic%20tuffs%20at%20East%20Dam%20of%20High%20Island%20Reservoir%202.jpg?width=1200" alt="东坝六角形火山岩柱">
+          <div class="photo-caption"><strong>六角岩柱</strong><span>东坝最经典的地质景观，适合安排在徒步前热身参观。</span></div>
+        </article>
+        <article class="photo-card">
+          <img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/East%20Dam%2C%20High%20Island%20Reservoir%203.jpg?width=1200" alt="万宜水库东坝海岸线">
+          <div class="photo-caption"><strong>东坝海岸线</strong><span>水库、堤坝、海岸和岩柱集中在同一片区域。</span></div>
+        </article>
+        <article class="photo-card featured">
+          <img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/East%20Dam%2C%20High%20Island%20Reservoir%202.jpg?width=1800" alt="万宜水库东坝全景">
+          <div class="photo-caption"><strong>东坝全景</strong><span>从开阔处看东坝，能同时看到堤坝、防波块和远处海面。</span></div>
+        </article>
+        <article class="photo-card">
+          <img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/High%20Island%20Reservoir%204.jpg?width=1200" alt="万宜水库水面和山体">
+          <div class="photo-caption"><strong>万宜水库</strong><span>徒步起点附近的水库景观，和海岸地貌形成很强对比。</span></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="sources">
+      <div class="section-head">
+        <h2>资料来源</h2>
+        <p>页面信息按 2026 年 9 月 23 日核对。交通、预约和天气可能变化，出发前请二次确认。</p>
+      </div>
+      <ul class="source-list">
+        <li><a href="https://www.discoverhongkong.cn/place-to-go/travel.guide-maclehose-trail.html" target="_blank" rel="noreferrer">香港旅游发展局：麦理浩径</a></li>
+        <li><a href="https://www.discoverhongkong.cn/place-to-go/travel.guide-po-pin-chau.html" target="_blank" rel="noreferrer">香港旅游发展局：破边洲</a></li>
+        <li><a href="https://www.hiking.gov.hk/trail/info/id/VFFUbFFNOXNXTHNWU2FqT09UTjlOZz09" target="_blank" rel="noreferrer">香港渔农自然护理署：麦理浩径第一段官方路线与 GPX</a></li>
+        <li><a href="https://www.hiking.gov.hk/trail/info/id/c2ZrZUpiUGRBck1TanVNQ1J6Qkg5Zz09" target="_blank" rel="noreferrer">香港渔农自然护理署：万宜地质步道—破边洲段官方路线与 GPX</a></li>
+        <li><a href="https://www.hiking.gov.hk/ppcbooking" target="_blank" rel="noreferrer">香港渔农自然护理署：万宜地质步道—破边洲段预约</a></li>
+        <li><a href="https://www.td.gov.hk/sc/transport_in_hong_kong/public_transport/taxi/index_t.html" target="_blank" rel="noreferrer">香港运输署：的士电子缴费媒介</a></li>
+        <li><a href="https://www.nia.gov.cn/n741445/n741604/n1787214/c1790954/content.html" target="_blank" rel="noreferrer">国家移民管理局：往来港澳通行证和签注签发服务指南</a></li>
+        <li><a href="https://www.trailwatch.hk/zh-HK/plan-share/418" target="_blank" rel="noreferrer">TrailWatch：麦理浩径第一段</a></li>
+        <li><a href="https://commons.wikimedia.org/wiki/Category:Po_Pin_Chau" target="_blank" rel="noreferrer">Wikimedia Commons：Po Pin Chau 图库</a>、<a href="https://commons.wikimedia.org/wiki/Category:Long_Ke_Wan" target="_blank" rel="noreferrer">Long Ke Wan 图库</a>、<a href="https://commons.wikimedia.org/wiki/Category:Rhyolite_in_Hong_Kong" target="_blank" rel="noreferrer">东坝六角岩柱相关图片</a></li>
+      </ul>
+    </section>
+
+    <footer>
+      做队伍通知时，可把本页发给同行者，并另建群接龙确认：证件/签注、破边洲预约、港币现金、流量包、1.5L 以上饮水、雨具、防晒、头灯或备用电源。
+    </footer>
+  </main>
+
+  <script src="official-routes.js"></script>
+  <script>
+    const map = L.map("map", {
+      scrollWheelZoom: false,
+      zoomControl: true
+    }).setView([22.43, 114.22], 10);
+
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+      maxZoom: 19,
+      subdomains: "abcd",
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+    }).addTo(map);
+
+    const points = {
+      huanancheng: [22.67848, 114.11720],
+      futian: [22.51835, 114.06724],
+      lokMaChau: [22.51470, 114.06560],
+      university: [22.41342, 114.21039],
+      eastDam: [22.36359, 114.37269],
+      poPin: [22.35819, 114.37724],
+      longKe: [22.38061, 114.37963],
+      pakTamChung: [22.40002, 114.32390]
+    };
+
+    const officialRoutes = window.OFFICIAL_ROUTE_DATA || {};
+    const universityToPakTam = [
+      points.university,
+      [22.42180, 114.23120],
+      [22.42640, 114.25870],
+      [22.41200, 114.28760],
+      [22.39890, 114.30720],
+      points.pakTamChung
+    ];
+
+    const transit = [
+      points.huanancheng,
+      points.futian,
+      points.lokMaChau,
+      points.university,
+      ...universityToPakTam.slice(1),
+      ...(officialRoutes.pakTamToEastDam || [points.eastDam])
+    ];
+
+    const poPinTrail = officialRoutes.poPinSection || [points.eastDam, points.poPin];
+    const eastDamToLongKe = officialRoutes.eastDamToLongKe || [points.eastDam, points.longKe];
+    const easyHike = [...poPinTrail, ...eastDamToLongKe];
+
+    const transitLayer = L.polyline(transit, {
+      color: "#0f6f75",
+      weight: 4,
+      opacity: .75,
+      dashArray: "8 8"
+    }).addTo(map).bindPopup("交通接驳示意：华南城 → 福田口岸/落马洲 → 大学站 → 东坝");
+
+    const poPinLayer = L.polyline(poPinTrail, {
+      color: "#e14942",
+      weight: 7,
+      opacity: .96
+    }).addTo(map).bindPopup("官方 GPX：万宜地质步道—破边洲段，约 2 公里");
+
+    const longKeLayer = L.polyline(eastDamToLongKe, {
+      color: "#d96c38",
+      weight: 7,
+      opacity: .95
+    }).addTo(map).bindPopup("官方 GPX：麦理浩径第一段东坝至浪茄湾方向");
+
+    const markers = [
+      ["华南城地铁站", points.huanancheng, "深圳地铁 10 号线起点"],
+      ["福田口岸 / 落马洲", points.futian, "过关后接香港东铁线"],
+      ["大学站", points.university, "出站后直接打新界的士到东坝"],
+      ["万宜水库东坝", points.eastDam, "徒步起终点，六角岩柱与海堤"],
+      ["破边洲观景台", points.poPin, "指定高峰日期白天须预约"],
+      ["浪茄湾", points.longKe, "轻徒步折返点，按天色和体力决定停留时间"]
+    ];
+
+    markers.forEach(([name, latlng, note]) => {
+      L.marker(latlng).addTo(map).bindPopup(`<strong>${name}</strong><br>${note}`);
+    });
+
+    L.control.layers(null, {
+      "交通接驳示意": transitLayer,
+      "破边洲官方 GPX": poPinLayer,
+      "东坝至浪茄湾官方 GPX": longKeLayer
+    }, {
+      collapsed: false,
+      position: "topright"
+    }).addTo(map);
+
+    const legend = L.control({ position: "bottomleft" });
+    legend.onAdd = () => {
+      const div = L.DomUtil.create("div", "map-legend");
+      div.innerHTML = `
+        <strong>路线图例</strong>
+        <div class="legend-row"><span class="legend-line po"></span>破边洲段官方 GPX</div>
+        <div class="legend-row"><span class="legend-line"></span>东坝至浪茄湾官方 GPX</div>
+        <div class="legend-row"><span class="legend-line road"></span>交通接驳示意</div>
+      `;
+      return div;
+    };
+    legend.addTo(map);
+
+    const hikingBounds = L.latLngBounds([...poPinTrail, ...eastDamToLongKe]);
+    map.fitBounds(hikingBounds, { padding: [42, 42] });
+  </script>
+</body>
+</html>
